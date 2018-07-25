@@ -9,7 +9,7 @@ Create a ssh key and install on your pi-hole installation.
 Use ssh-agent and ssh-add to add ssh identity during use of the cli.
 
 # Functionality
-`
+```bash
 Usage: pyholecli-runner.py [--core-opts] <subcommand> [--subcommand-opts] ...
 
 Core options:
@@ -50,4 +50,4 @@ Subcommands:
   status
   tail
   whitelist
-`
+```
