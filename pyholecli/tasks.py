@@ -1,78 +1,75 @@
-from fabric import task
-from pyholecli.services import HostnameUtility, PiholeCLIWrapper
+from pyholecli.task_decorators import hostnametask, piholetask
 
 
-@task(help={'hostname': 'Hostname to search for.'})
-def hostnames(c, hostname=None):
-    util = HostnameUtility(c)
+@hostnametask(help={'hostname': 'Hostname to search for.'})
+def hostnames(util, hostname=None):
     if hostname:
         print(util.get_host(hostname))
     else:
         print(util.get_hosts())
 
 
-@task(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
-def add_host(c, hostname, ip):
-    util = HostnameUtility(c)
+@hostnametask(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
+def add_host(util, hostname, ip):
     util.set_host(hostname, ip)
     print(f'{hostname} added to pi-hole list.')
 
 
-@task(help={'domain': 'Domain to query.'})
-def query(c, domain):
-    PiholeCLIWrapper(c).query(domain)
+@piholetask(help={'domain': 'Domain to query.'})
+def query(pihole, domain):
+    pihole.query(domain)
 
 
-@task()
-def disable(c):
-    PiholeCLIWrapper(c).disable()
+@piholetask()
+def disable(pihole):
+    pihole.disable()
 
 
-@task()
-def enable(c):
-    PiholeCLIWrapper(c).enable()
+@piholetask()
+def enable(pihole):
+    pihole.enable()
 
 
-@task()
-def status(c):
-    PiholeCLIWrapper(c).status()
+@piholetask()
+def status(pihole):
+    pihole.status()
 
 
-@task()
-def chronometer(c):
-    PiholeCLIWrapper(c).chronometer()
+@piholetask()
+def chronometer(pihole):
+    pihole.chronometer()
 
 
-@task()
-def tail(c):
-    PiholeCLIWrapper(c).tail()
+@piholetask()
+def tail(pihole):
+    pihole.tail()
 
 
-@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def blacklist(c, domain):
-    PiholeCLIWrapper(c).blacklist(domain)
+@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def blacklist(pihole, domain):
+    pihole.blacklist(domain)
 
 
-@task()
-def get_blacklisted_domains(c):
-    PiholeCLIWrapper(c).get_blacklisted_domains()
+@piholetask()
+def get_blacklisted_domains(pihole):
+    pihole.get_blacklisted_domains()
 
 
-@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_blacklisted_domains(c, domain):
-    PiholeCLIWrapper(c).remove_blacklisted_domains(domain)
+@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def remove_blacklisted_domains(pihole, domain):
+    pihole.remove_blacklisted_domains(domain)
 
 
-@task(help={'domain': 'Domain to whitelist.'}, iterable=['domain'])
-def whitelist(c, domain):
-    PiholeCLIWrapper(c).whitelist(domain)
+@piholetask(help={'domain': 'Domain to whitelist.'}, iterable=['domain'])
+def whitelist(pihole, domain):
+    pihole.whitelist(domain)
 
 
-@task()
-def get_whitelisted_domains(c):
-    PiholeCLIWrapper(c).get_whitelisted_domains()
+@piholetask()
+def get_whitelisted_domains(pihole):
+    pihole.get_whitelisted_domains()
 
 
-@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_whitelisted_domains(c, domain):
-    PiholeCLIWrapper(c).remove_whitelisted_domains(domain)
+@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def remove_whitelisted_domains(pihole, domain):
+    pihole.remove_whitelisted_domains(domain)

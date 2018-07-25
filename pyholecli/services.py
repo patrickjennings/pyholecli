@@ -27,7 +27,7 @@ class HostnameUtility(RunnableBaseClass):
         hosts[hostname] = Host(hostname, ip)
 
 
-class PiholeCLIWrapper(RunnableBaseClass):
+class PiholeCLI(RunnableBaseClass):
 
     def status(self):
         return self._run_command('pihole', 'status')
