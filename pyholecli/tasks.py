@@ -1,89 +1,90 @@
-from pyholecli.task_decorators import hostnametask, piholetask
+from fabric import task
+from pyholecli.services import HostnameUtility, PiholeCLI
 
 
-@hostnametask(help={'hostname': 'Hostname to search for.'})
-def hostnames(util, hostname=None):
+@task(help={'hostname': 'Hostname to search for.'})
+def hostnames(connection, hostname=None):
     """Print the custom hostnames defined by the pi.hole instance."""
+    util = HostnameUtility(connection)
     if hostname:
         print(util.get_host(hostname))
     else:
         print(util.get_hosts())
 
 
-@hostnametask(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
-def add_host(util, hostname, ip):
+@task(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
+def add_host(connection, hostname, ip):
     """Add a custom hostname which the pi.hole will resolve to the given IP address."""
-    util.set_host(hostname, ip)
-    print(f'{hostname} added to pi-hole list.')
+    HostnameUtility(connection).set_host(hostname, ip)
 
 
-@piholetask(help={'domain': 'Domain to query.'})
-def query(pihole, domain):
+@task(help={'domain': 'Domain to query.'})
+def query(connection, domain):
     """Query the pi.hole instance for a given FQDN."""
-    pihole.query(domain)
+    PiholeCLI(connection).query(domain)
 
 
-@piholetask()
-def disable(pihole):
+@task()
+def disable(connection):
     """Disable the pi.hole blacklist."""
-    pihole.disable()
+    PiholeCLI(connection).disable()
 
 
-@piholetask()
-def enable(pihole):
+@task()
+def enable(connection):
     """Enable the pi.hole blacklist."""
-    pihole.enable()
+    PiholeCLI(connection).enable()
 
 
-@piholetask()
-def status(pihole):
+@task()
+def status(connection):
     """Query the status of the pi.hole instance."""
-    pihole.status()
+    PiholeCLI(connection).status()
 
 
-@piholetask()
-def chronometer(pihole):
+@task()
+def chronometer(connection):
     """Continually print the stats using the chronometer."""
-    pihole.chronometer()
+    PiholeCLI(connection).chronometer()
 
 
-@piholetask()
-def tail(pihole):
+@task()
+def tail(connection):
     """Tail the pi.hole resolver log file."""
-    pihole.tail()
+    PiholeCLI(connection).tail()
 
 
-@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def blacklist(pihole, domain):
+@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def blacklist(connection, domain):
     """Blacklist a given domain."""
-    pihole.blacklist(domain)
+    PiholeCLI(connection).blacklist(domain)
 
 
-@piholetask()
-def get_blacklisted_domains(pihole):
+@task()
+def get_blacklisted_domains(connection):
     """Get all of the custom blacklisted domains."""
-    pihole.get_blacklisted_domains()
+    PiholeCLI(connection).get_blacklisted_domains()
 
 
-@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_blacklisted_domains(pihole, domain):
+@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def remove_blacklisted_domains(connection, domain):
     """Remove a given custom blacklisted domain."""
-    pihole.remove_blacklisted_domains(domain)
+    PiholeCLI(connection).remove_blacklisted_domains(domain)
 
 
-@piholetask(help={'domain': 'Domain to whitelist.'}, iterable=['domain'])
-def whitelist(pihole, domain):
+@task(help={'domain': 'Domain to whitelist.'}, iterable=['domain'])
+def whitelist(connection, domain):
     """Whitelist a given domain."""
-    pihole.whitelist(domain)
+    PiholeCLI(connection).whitelist(domain)
 
 
-@piholetask()
-def get_whitelisted_domains(pihole):
+@task()
+def get_whitelisted_domains(connection):
     """Get all of the custom whitelisted domains."""
-    pihole.get_whitelisted_domains()
+    PiholeCLI(connection).get_whitelisted_domains()
 
 
-@piholetask(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_whitelisted_domains(pihole, domain):
+@task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
+def remove_whitelisted_domains(connection, domain):
     """Remove a given whitelisted domain."""
-    pihole.remove_whitelisted_domains(domain)
+    PiholeCLI(connection).remove_whitelisted_domains(domain)
