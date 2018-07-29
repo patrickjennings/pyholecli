@@ -1,16 +1,67 @@
-Still in development.
-
 # Description
-Control Pi-hole installation from anywhere.
+Control a Pi-hole installation from anywhere.
+
+* Manage blacklisted and whitelisted domains.
+* Create and remove custom domains for your internal services.
+* Tail the query log.
+* Remotely view the chronometer for realtime statistics.
+
+# Install
+```bash
+pip install pyholecli
+```
 
 # Setup
-Create a ssh key and install on your pi-hole installation.
+Create a SSH key and install on your Pi-hole installation as the root user.
+This key will be used to connect remotely to the instance.
 
-Use ssh-agent and ssh-add to add ssh identity during use of the cli.
+You can use standard methods to declare the ssh key to be used by pyholecli.
+
+## ssh-agent
+```bash
+eval `ssh-agent`
+ssh-add ~/.ssh/keys/pi_hole
+```
+
+## ssh_config
+```bash
+# ~/.ssh/config
+Host pi.hole
+    User root
+    IdentityFile ~/.ssh/keys/pi_hole
+```
+
+## Pass as an Argument
+```bash
+pyholecli -i ~/.ssh/keys/pi_hole status
+```
+
+# Examples
+Get help about a specific command.
+```
+pyholecli --help <command>
+```
+
+Get the status of the Pi-hole services.
+```
+pyholecli status
+  [✓] DNS service is running
+  [✓] Pi-hole blocking is Enabled
+```
+
+Add a custom hostname to be resolved by Pi.hole.
+```
+pyholecli host -h testing.local -i 192.168.1.100
+```
+
+Remove multiple custom hostnames.
+```
+pyholecli remove-hostnames -h redis.localhost -h psql.localhost
+```
 
 # Functionality
-```bash
-Usage: pyholecli-runner.py [--core-opts] <subcommand> [--subcommand-opts] ...
+```
+Usage: pyholecli [--core-opts] <subcommand> [--subcommand-opts] ...
 
 Core options:
 
@@ -36,18 +87,22 @@ Core options:
 
 Subcommands:
 
-  add-host
-  blacklist
-  chronometer
-  disable
-  enable
-  get-blacklisted-domains
-  get-whitelisted-domains
-  hostnames
-  query
-  remove-blacklisted-domains
-  remove-whitelisted-domains
-  status
-  tail
-  whitelist
+  blacklist                   Blacklist a given domain.
+  blacklisted-domains         Get all of the custom blacklisted domains.
+  chronometer                 Continually print the stats using the chronometer.
+  disable                     Disable the pi.hole blacklist.
+  enable                      Enable the pi.hole blacklist.
+  hostname                    Add a custom hostname which the pi.hole will resolve to the given IP address.
+  hostnames                   Print the custom hostnames defined by the pi.hole instance.
+  query                       Query the pi.hole instance for a given FQDN.
+  remove-blacklisted-domain   Remove a given custom blacklisted domain.
+  remove-hostname             Remove a custom hostname.
+  remove-whitelisted-domain   Remove a given whitelisted domain.
+  remove-wildcard-blacklist   Remove a given wildcard blacklist.
+  status                      Query the status of the pi.hole instance.
+  tail                        Tail the pi.hole resolver log file.
+  whitelist                   Whitelist a given domain.
+  whitelisted-domains         Get all of the custom whitelisted domains.
+  wildcard-blacklist          Blacklist a given domain and its subdomains.
+  wildcard-blacklists         Print the wildcard blacklist.
 ```
