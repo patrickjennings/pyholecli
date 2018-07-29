@@ -10,26 +10,26 @@ def hostnames(connection, hostname=None):
     util = HostnameUtility(connection)
     if hostname:
         try:
-            print(util.get_host(hostname))
+            logger.info(util.get_host(hostname))
         except HostnameNotFound as e:
             logger.error(e)
     else:
-        print(util.get_hosts())
+        logger.info(util.hosts)
 
 
 @task(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
-def host(connection, hostname, ip):
+def hostname(connection, hostname, ip):
     """Add a custom hostname which the pi.hole will resolve to the given IP address."""
     HostnameUtility(connection).set_host(hostname, ip)
-    logger.info('Added Host: ', hostname, ip)
+    logger.info('Added Host: %s with IP: %s', hostname, ip)
 
 
-@task(help={'hostname': 'Hostname to remove.'})
-def remove_host(connection, hostname):
+@task(help={'hostname': 'Hostname to remove.'}, iterable=['hostname'])
+def remove_hostname(connection, hostname):
     """Remove a custom hostname."""
     try:
-        HostnameUtility(connection).remove_host(hostname)
-        logger.info('Removed Host: ', hostname)
+        HostnameUtility(connection).remove_hosts(hostname)
+        logger.info('Removed Host: %s', hostname)
     except HostnameNotFound as e:
         logger.error(e)
 
