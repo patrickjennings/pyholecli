@@ -51,7 +51,7 @@ pyholecli status
 
 Add a custom hostname to be resolved by Pi.hole.
 ```
-pyholecli host -h testing.local -i 192.168.1.100
+pyholecli hostname -h testing.local -i 192.168.1.100
 ```
 
 Remove multiple custom hostnames.
