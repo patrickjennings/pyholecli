@@ -10,3 +10,7 @@ def prep_arguments(arguments):
 def run_command(c, *args, **kwargs):
     command = prep_arguments(args)
     return c.run(command, **kwargs)
+
+
+def put_file(c, local, remote, *args, **kwargs):
+    return c.put(local, remote, *args, **kwargs)

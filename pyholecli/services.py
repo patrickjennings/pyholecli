@@ -1,5 +1,7 @@
+from io import BytesIO
+from pyholecli.exceptions import HostnameNotFound
 from pyholecli.models import Host, Hosts
-from pyholecli.utils import run_command
+from pyholecli.utils import put_file, run_command
 from pyholecli import settings
 
 
@@ -10,21 +12,45 @@ class RunnableBaseClass:
     def _run_command(self, *args, **kwargs):
         return run_command(self._c, *args, **kwargs)
 
+    def _put_file(self, local, remote, *args, **kwargs):
+        return put_file(self._c, local, remote, *args, **kwargs)
+
 
 class HostnameUtility(RunnableBaseClass):
     hosts_file = settings.LOCAL_HOSTNAME_FILENAME
 
+    @property
+    def hosts(self):
+        if not hasattr(self, '_hosts'):
+            result = self._run_command('cat', self.hosts_file, hide=True)
+            self._hosts = Hosts.from_hosts_string(result.stdout)
+        return self._hosts
+
     def get_hosts(self):
-        result = self._run_command('cat', self.hosts_file, hide=True)
-        return Hosts.from_hosts_string(result.stdout)
+        return self.hosts
 
     def get_host(self, hostname):
-        hosts = self.get_hosts()
-        return hosts[hostname]
+        try:
+            return self.hosts[hostname]
+        except KeyError:
+            message = 'Could not find hostname {}'.format(hostname)
+            raise HostnameNotFound(message)
 
     def set_host(self, hostname, ip):
-        hosts = self.get_hosts()
-        hosts[hostname] = Host(hostname, ip)
+        self.hosts[hostname] = Host(hostname, ip)
+        self._write_hosts()
+
+    def remove_host(self, hostname):
+        try:
+            del self.hosts[hostname]
+            self._write_hosts()
+        except KeyError:
+            message = 'Could not find hostname {}'.format(hostname)
+            raise HostnameNotFound(message)
+
+    def _write_hosts(self):
+        hosts_fd = BytesIO(str(self.hosts).encode('utf-8'))
+        self._put_file(hosts_fd, self.hosts_file)
 
 
 class PiholeCLI(RunnableBaseClass):

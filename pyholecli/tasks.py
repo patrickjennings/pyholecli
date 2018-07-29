@@ -1,4 +1,6 @@
 from fabric import task
+from pyholecli.exceptions import HostnameNotFound
+from pyholecli.logging import logger
 from pyholecli.services import HostnameUtility, PiholeCLI
 
 
@@ -7,7 +9,10 @@ def hostnames(connection, hostname=None):
     """Print the custom hostnames defined by the pi.hole instance."""
     util = HostnameUtility(connection)
     if hostname:
-        print(util.get_host(hostname))
+        try:
+            print(util.get_host(hostname))
+        except HostnameNotFound as e:
+            logger.error(e)
     else:
         print(util.get_hosts())
 
@@ -16,6 +21,17 @@ def hostnames(connection, hostname=None):
 def add_host(connection, hostname, ip):
     """Add a custom hostname which the pi.hole will resolve to the given IP address."""
     HostnameUtility(connection).set_host(hostname, ip)
+    logger.info('Added Host: ', hostname, ip)
+
+
+@task(help={'hostname': 'Hostname to remove.'})
+def remove_host(connection, hostname):
+    """Remove a custom hostname."""
+    try:
+        HostnameUtility(connection).remove_host(hostname)
+        logger.info('Removed Host: ', hostname)
+    except HostnameNotFound as e:
+        logger.error(e)
 
 
 @task(help={'domain': 'Domain to query.'})
