@@ -73,20 +73,29 @@ class PiholeCLI(RunnableBaseClass):
     def tail(self):
         return self._run_command('pihole', '-t', pty=True)
 
-    def blacklist(self, *domains):
-        return self._run_command('pihole', '-b', *domains)
+    def blacklist(self, domains):
+        return self._run_command('pihole', '-b', domains)
 
     def get_blacklisted_domains(self):
         return self._run_command('pihole', '-b', '-l')
 
-    def remove_blacklisted_domains(self, *domains):
-        return self._run_command('pihole', '-b', '-d', *domains)
+    def remove_blacklisted_domains(self, domains):
+        return self._run_command('pihole', '-b', '-d', domains)
 
-    def whitelist(self, *domains):
-        return self._run_command('pihole', '-w', *domains)
+    def whitelist(self, domains):
+        return self._run_command('pihole', '-w', domains)
 
     def get_whitelisted_domains(self):
         return self._run_command('pihole', '-w', '-l')
 
-    def remove_whitelisted_domains(self, *domains):
-        return self._run_command('pihole', '-w', '-d', *domains)
+    def remove_whitelisted_domains(self, domains):
+        return self._run_command('pihole', '-w', '-d', domains)
+
+    def wildcard_blacklist(self, domains):
+        return self._run_command('pihole', '-wild', domains)
+
+    def get_wildcard_blacklist(self):
+        return self._run_command('pihole', '-wild', '-l')
+
+    def remove_wildcard_blacklist(self, domains):
+        return self._run_command('pihole', '-wild', '-d', domains)

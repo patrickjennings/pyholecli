@@ -18,7 +18,7 @@ def hostnames(connection, hostname=None):
 
 
 @task(help={'hostname': 'Hostname to set.', 'ip': 'IP address of host.'})
-def add_host(connection, hostname, ip):
+def host(connection, hostname, ip):
     """Add a custom hostname which the pi.hole will resolve to the given IP address."""
     HostnameUtility(connection).set_host(hostname, ip)
     logger.info('Added Host: ', hostname, ip)
@@ -77,13 +77,13 @@ def blacklist(connection, domain):
 
 
 @task()
-def get_blacklisted_domains(connection):
+def blacklisted_domains(connection):
     """Get all of the custom blacklisted domains."""
     PiholeCLI(connection).get_blacklisted_domains()
 
 
 @task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_blacklisted_domains(connection, domain):
+def remove_blacklisted_domain(connection, domain):
     """Remove a given custom blacklisted domain."""
     PiholeCLI(connection).remove_blacklisted_domains(domain)
 
@@ -95,12 +95,30 @@ def whitelist(connection, domain):
 
 
 @task()
-def get_whitelisted_domains(connection):
+def whitelisted_domains(connection):
     """Get all of the custom whitelisted domains."""
     PiholeCLI(connection).get_whitelisted_domains()
 
 
 @task(help={'domain': 'Domain to blacklist.'}, iterable=['domain'])
-def remove_whitelisted_domains(connection, domain):
+def remove_whitelisted_domain(connection, domain):
     """Remove a given whitelisted domain."""
     PiholeCLI(connection).remove_whitelisted_domains(domain)
+
+
+@task(help={'domain': 'Domain to wildcard blacklist.'}, iterable=['domain'])
+def wildcard_blacklist(connection, domain):
+    """Blacklist a given domain and its subdomains."""
+    PiholeCLI(connection).wildcard_blacklist(domain)
+
+
+@task()
+def wildcard_blacklists(connection):
+    """Print the wildcard blacklist."""
+    PiholeCLI(connection).get_wildcard_blacklist()
+
+
+@task(help={'domain': 'Wildcard blacklist to remove.'}, iterable=['domain'])
+def remove_wildcard_blacklist(connection, domain):
+    """Remove a given wildcard blacklist."""
+    PiholeCLI(connection).remove_wildcard_blacklist(domain)
