@@ -61,10 +61,10 @@ class PiholeCLI(RunnableBaseClass):
     def status(self):
         return self._run_command('status')
 
-    def enable(self, domain):
+    def enable(self):
         return self._run_command('enable')
 
-    def disable(self, domain):
+    def disable(self):
         return self._run_command('disable')
 
     def query(self, domain):
